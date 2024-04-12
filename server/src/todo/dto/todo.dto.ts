@@ -18,13 +18,13 @@ export class CreateTodoDto {
 export class UpdateTodoDto {
   @IsString()
   @IsOptional()
-  @MinLength(0)
+  @MinLength(1)
   @MaxLength(100)
   title?: string;
 
   @IsString()
   @IsOptional()
-  @MinLength(0)
+  @MinLength(1)
   @MaxLength(2000)
   description?: string;
 
