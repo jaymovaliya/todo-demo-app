@@ -12,37 +12,45 @@ export class TodoService {
     private readonly todoRepository: Repository<Todo>,
   ) {}
 
-  create(createTodoDto: CreateTodoDto): Promise<Todo> {
+  create(createTodoDto: CreateTodoDto, userId: string): Promise<Todo> {
     const todo = new Todo();
     todo.title = createTodoDto.title;
     todo.description = createTodoDto.description;
+    todo.userId = userId;
     todo.status = TodoStatus.NOT_STARTED;
     return this.todoRepository.save(todo);
   }
 
-  findAll(status?: TodoStatus): Promise<Todo[]> {
+  findAll(userId: string, status?: TodoStatus): Promise<Todo[]> {
     if (status) {
       return this.todoRepository.find({
         where: {
             status: status,
+            userId: userId,
         }
       });
     }
-    return this.todoRepository.find();
+    return this.todoRepository.find({
+      where: {
+          userId: userId,
+      }
+    });
   }
 
-  async findOne(id: string): Promise<Todo> {
+  async findOne(id: string, userId: string): Promise<Todo> {
     return this.todoRepository.findOne({
         where: {
             _id: new ObjectId(id),
+            userId: userId,
         }
     });
   }
 
-  async update(id: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
+  async update(id: string, updateTodoDto: UpdateTodoDto, userId: string): Promise<Todo> {
     const todo = await this.todoRepository.findOne({
         where: {
             _id: new ObjectId(id),
+            userId: userId,
         }
     });
     if (!todo) {
@@ -52,7 +60,10 @@ export class TodoService {
     return this.todoRepository.save(todo);
   }
 
-  async remove(id: string): Promise<void> {
-    await this.todoRepository.delete(id);
+  async remove(id: string, userId: string): Promise<void> {
+    await this.todoRepository.delete({
+        _id: new ObjectId(id),
+        userId: userId,
+    });
   }
 }

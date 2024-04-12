@@ -19,4 +19,7 @@ export class Todo {
 
   @Column()
   status: TodoStatus;
+
+  @Column()
+  userId: string;
 }

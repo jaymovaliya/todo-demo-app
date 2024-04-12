@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { hash, compare } from 'bcrypt';
 import { CreateUserDto, LoginDto } from './dto/user.dto';
 import * as jwt from 'jsonwebtoken';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UserService {
@@ -54,5 +55,14 @@ export class UserService {
         token,
         user
     }
+  }
+
+  async validateToken(token: string): Promise<User> {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    return this.userRepository.findOne({
+        where: {
+            _id: new ObjectId(payload.id)
+        }
+    });
   }
 }
