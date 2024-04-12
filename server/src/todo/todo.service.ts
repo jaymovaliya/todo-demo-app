@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Todo, TodoStatus } from './todo.entity';
@@ -54,7 +54,7 @@ export class TodoService {
         }
     });
     if (!todo) {
-      throw new Error('Todo not found');
+      throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
     }
     Object.assign(todo, updateTodoDto);
     return this.todoRepository.save(todo);

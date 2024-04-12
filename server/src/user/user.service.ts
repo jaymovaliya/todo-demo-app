@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -17,7 +17,7 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<{ email: string }> {
     const existingUser = await this.findByEmail(createUserDto.email);
     if (existingUser) {
-        throw new Error('User already exists');
+        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
     const hashedPassword = await hash(createUserDto.password, 10);
     const user = this.userRepository.create({ 
@@ -40,11 +40,11 @@ export class UserService {
     const {email, password} = logInDto;
     const user = await this.findByEmail(email);
     if (!user) {
-        throw new Error('Invalid username or password');
+        throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
     }
     const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
-        throw new Error('Invalid username or password');
+        throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
     }
     delete user.password;
     const payload = {
