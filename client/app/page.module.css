@@ -95,6 +95,77 @@
   color: #555555;
 }
 
+.modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modalContent {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .modalContent h2 {
+    margin-bottom: 20px;
+  }
+  
+  /* Form Styles */
+  .inputGroup {
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    font-size: 1rem;
+    color: #333333;
+  }
+  
+  .input {
+    margin-top: 10px;
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  
+  .submitButton,
+  .cancelButton {
+    background-color: #008CBA;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .submitButton:hover,
+  .cancelButton:hover {
+    background-color: #005f79;
+  }
+
 @media (max-width: 600px) {
   .container {
     padding: 10px;
@@ -115,6 +186,17 @@
   }
 
   .todoCard {
+    width: 100%;
+  }
+
+  .modalContent {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .submitButton,
+  .cancelButton {
+    margin-top: 10px;
     width: 100%;
   }
 }
