@@ -1,95 +1,78 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import styles from './page.module.css';
 
 export default function Home() {
+  const router = useRouter()
+  const [todos, setTodos] = useState<any[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+    } else {
+      fetchTodos(token);
+    }
+  }, []);
+
+  const fetchTodos = async (token: string) => {
+    try {
+      const response = await fetch('http://localhost:9091/todos', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch todos');
+      }
+      const data = await response.json();
+      setTodos(data);
+      setFilteredTodos(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+      // Handle error
+    }
+  };
+
+  const filterTodos = (status: string) => {
+    if (status === 'all') {
+      setFilteredTodos(todos);
+    } else {
+      const filtered = todos.filter(todo => todo.status === status);
+      setFilteredTodos(filtered);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div>
+      <h1>Todo List</h1>
+      <div>
+        <button onClick={() => filterTodos('all')}>All</button>
+        <button onClick={() => filterTodos('todo')}>Todo</button>
+        <button onClick={() => filterTodos('in progress')}>In Progress</button>
+        <button onClick={() => filterTodos('done')}>Done</button>
+      </div>
+      <div>
+        <button onClick={() => {}}>Create New Todo</button>
+      </div>
+      <div className={styles.todoContainer}>
+      {filteredTodos.map(todo => (
+        <div key={todo.id}  className={styles.todoCard}>
+          <h3 className={styles.todoTitle}>{todo.title}</h3>
+          <p className={styles.todoStatus}>Status: {todo.status}</p>
+          <p className={styles.todoDescription}>{todo.description}</p>
         </div>
+      ))}
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }

@@ -39,6 +39,8 @@ const LoginForm: React.FC = () => {
           return;
         }
       }
+      const responseData = await response.json();
+      localStorage.setItem('token', responseData.token);
       setLoading(false);
       router.push('/');
     } catch (error) {

@@ -1,0 +1,27 @@
+
+.todoContainer {
+    padding: 20px;
+  }
+  
+  .todoCard {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .todoTitle {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .todoStatus {
+    font-size: 14px;
+    font-style: italic;
+    color: #666;
+  }
+  
+  .todoDescription {
+    font-size: 16px;
+  }
+  
