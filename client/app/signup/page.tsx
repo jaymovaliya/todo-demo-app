@@ -1,11 +1,14 @@
 'use client'
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import React, { useState } from 'react';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styles from './signup.module.css';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const SignupForm: React.FC = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -15,14 +18,36 @@ const SignupForm: React.FC = () => {
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
-    lastName: Yup.string().required('Last Name is required'),
+    lastName: Yup.string(),
     email: Yup.string().email('Invalid email').required('Email is required'),
-    password: Yup.string().required('Password is required'),
+    password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
   });
 
-  const handleSubmit = (values: typeof initialValues) => {
-    // Call your signup API here with values
-    console.log('Submitting form with values:', values);
+  const handleSubmit = async (values: typeof initialValues, { setErrors }: FormikHelpers<typeof initialValues>) => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:9091/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        if(errorData.code === "USER_ALREADY_EXISTS") {
+          setErrors({ email: errorData.message })
+          setLoading(false);
+          return;
+        }
+      }
+      setLoading(false);
+      router.push('/login');
+    } catch (error) {
+      setLoading(false);
+      console.error('Signup error:', error);
+    }
   };
 
   return (
@@ -51,7 +76,9 @@ const SignupForm: React.FC = () => {
               <Field type="password" id="password" name="password" className={styles.input} />
               <ErrorMessage name="password" component="div" className={styles.error} />
             </div>
-            <button type="submit" className={styles.submitButton}>Sign up</button>
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+              {loading ? '...' : 'Sign up'}
+            </button>
           </Form>
         )}
       </Formik>
