@@ -43,11 +43,17 @@ export class UserService {
     const {email, password} = logInDto;
     const user = await this.findByEmail(email);
     if (!user) {
-        throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
+        throw new HttpException({
+          code: "INVALID_USERNAME_OR_PASSWORD",
+          message: "Invalid username or password",
+        }, HttpStatus.UNAUTHORIZED);
     }
     const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
-        throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
+      throw new HttpException({
+        code: "INVALID_USERNAME_OR_PASSWORD",
+        message: "Invalid username or password",
+      }, HttpStatus.UNAUTHORIZED);
     }
     delete user.password;
     const payload = {
