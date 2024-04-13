@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
-export default function Home() {
-  const router = useRouter()
+const TodoPage: React.FC = () => {
+  const router = useRouter();
   const [todos, setTodos] = useState<any[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeFilter, setActiveFilter] = useState<string>('all');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -40,6 +41,7 @@ export default function Home() {
   };
 
   const filterTodos = (status: string) => {
+    setActiveFilter(status);
     if (status === 'all') {
       setFilteredTodos(todos);
     } else {
@@ -48,25 +50,21 @@ export default function Home() {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
-      <h1>Todo List</h1>
-      <div>
-        <button onClick={() => filterTodos('all')}>All</button>
-        <button onClick={() => filterTodos('todo')}>Todo</button>
-        <button onClick={() => filterTodos('in progress')}>In Progress</button>
-        <button onClick={() => filterTodos('done')}>Done</button>
+      <div className={styles.header}>
+        <h1>Todo List</h1>
+        <button className={styles.createTodoButton} onClick={() => {}}>Create New Todo</button>
       </div>
-      <div>
-        <button onClick={() => {}}>Create New Todo</button>
+      <div className={styles.filters}>
+      <button className={`${styles.filterButton} ${activeFilter === 'all' ? styles.active : ''}`} onClick={() => filterTodos('all')}>All</button>
+        <button className={`${styles.filterButton} ${activeFilter === 'Not Started' ? styles.active : ''}`} onClick={() => filterTodos('Not Started')}>Todo</button>
+        <button className={`${styles.filterButton} ${activeFilter === 'In Progress' ? styles.active : ''}`} onClick={() => filterTodos('In Progress')}>In Progress</button>
+        <button className={`${styles.filterButton} ${activeFilter === 'Completed' ? styles.active : ''}`} onClick={() => filterTodos('Completed')}>Done</button>
       </div>
       <div className={styles.todoContainer}>
       {filteredTodos.map(todo => (
-        <div key={todo.id}  className={styles.todoCard}>
+        <div key={todo.id} className={styles.todoCard}>
           <h3 className={styles.todoTitle}>{todo.title}</h3>
           <p className={styles.todoStatus}>Status: {todo.status}</p>
           <p className={styles.todoDescription}>{todo.description}</p>
@@ -75,4 +73,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default TodoPage;

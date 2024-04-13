@@ -1,27 +1,120 @@
+/* pages/page.module.css */
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filterButton {
+    background-color: #EEEEEE;
+    border: 1px dotted #4CAF50;
+    color: #4CAF50;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .filterButton.active {
+    color: white;
+    background-color: #45a049;
+  }
+
+.createTodoButton {
+  background-color: #008CBA;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.createTodoButton:hover {
+  background-color: #005f79;
+}
 
 .todoContainer {
-    padding: 20px;
-  }
-  
-  .todoCard {
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.todoCard {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  width: calc(25% - 20px);
+  transition: transform 0.2s ease-in-out;
+}
+
+.todoCard:hover {
+  transform: translateY(-5px);
+}
+
+.todoTitle {
+  font-size: 1.2rem;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.todoStatus {
+  font-size: 1rem;
+  color: #666666;
+  font-style: italic;
+}
+
+.todoDescription {
+  font-size: 1rem;
+  color: #555555;
+}
+
+@media (max-width: 600px) {
+  .container {
     padding: 10px;
-    margin-bottom: 10px;
   }
-  
-  .todoTitle {
-    font-size: 18px;
-    margin-bottom: 5px;
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .todoStatus {
-    font-size: 14px;
-    font-style: italic;
-    color: #666;
+
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .todoDescription {
-    font-size: 16px;
+
+  .createTodoButton {
+    margin-top: 20px;
   }
-  
+
+  .todoCard {
+    width: 100%;
+  }
+}
