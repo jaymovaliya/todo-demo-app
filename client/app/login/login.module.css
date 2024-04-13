@@ -1,0 +1,97 @@
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .inputGroup {
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .input {
+    margin-top: 10px;
+    width: calc(100% - 20px); /* Adjusted width to account for padding */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in width calculation */
+  }
+  
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .submitButton {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .submitButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .redirectText {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .redirectLink {
+    color: #007bff;
+    text-decoration: underline;
+  }
+  
+  .redirectLink:hover {
+    color: #0056b3;
+  }
+  
+  /* Responsive Styling */
+  
+  @media screen and (max-width: 600px) {
+    .container {
+      max-width: 90%;
+      margin: 20px auto;
+      padding: 10px;
+    }
+  
+    .title {
+      font-size: 20px;
+    }
+  
+    .input {
+      padding: 8px;
+      font-size: 14px;
+    }
+  
+    .submitButton {
+      padding: 8px;
+      font-size: 14px;
+    }
+  }
+  
