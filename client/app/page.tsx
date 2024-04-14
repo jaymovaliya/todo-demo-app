@@ -80,6 +80,25 @@ const TodoPage: React.FC = () => {
     router.push('/login');
   }
 
+  const deleteTodo = async (id: string) => {
+    try {
+      const token = localStorage.getItem('token') || '';
+      console.log('Deleting todo:', id)
+      const response = await fetch(`http://localhost:9091/todos/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete todo');
+      }
+      fetchTodos(token);
+    } catch (error) {
+      console.error('Error deleting todo:', error);
+    }
+  }
+
   return (
     <div>
       <Header 
@@ -88,7 +107,10 @@ const TodoPage: React.FC = () => {
         onClickCreateTodo={() => setShowModal(true)}
         onClickLogout={handleLogout}
       />
-      <TodoList todos={filteredTodos} />
+      <TodoList 
+        todos={filteredTodos}
+        deleteTodo={deleteTodo}
+      />
       {showModal && (
         <CreateNewTodo onSubmit={handleSubmit} hideModal={() => setShowModal(false)} />
       )}

@@ -13,6 +13,14 @@
     width: calc(25% - 20px);
     transition: transform 0.2s ease-in-out;
   }
+
+  .deleteContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #666666;
+  }
   
   .todoCard:hover {
     transform: translateY(-5px);
