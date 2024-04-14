@@ -15,7 +15,8 @@ const useApi = (fetchUrl?: string) => {
             method,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'ngrok-skip-browser-warning': true
             },
         }
         if(method !== 'GET' && method !== 'DELETE') {
@@ -28,11 +29,11 @@ const useApi = (fetchUrl?: string) => {
       }
 
       const result = await response.json();
-      console.log(result);
       if(method === 'GET') {
         setData(result);
       }
     } catch (error: any) {
+      console.error(error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -43,7 +44,7 @@ const useApi = (fetchUrl?: string) => {
     if(fetchUrl) {
         fetchData(fetchUrl);
     }
-  }, []);
+  }, [fetchUrl]);
 
   const postData = async (url: string, body: any) => {
     await fetchData(url, 'POST', body);

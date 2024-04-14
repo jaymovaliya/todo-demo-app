@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styles from './login.module.css';
@@ -29,6 +29,13 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      router.push('/');
+    }
+  }, [])
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Log In</h2>
@@ -52,7 +59,7 @@ const LoginForm: React.FC = () => {
         )}
       </Formik>
       <p className={styles.redirectText}>
-        Don't have an account?{' '}
+        {"Don't have an account? "}
         <Link href="/signup" passHref legacyBehavior>
           <a className={styles.redirectLink}>Sign Up</a>
         </Link>
