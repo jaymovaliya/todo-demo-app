@@ -5,3 +5,4 @@
 # dependencies
 /client/node_modules
 /client/.next
+/client/.env
