@@ -1,6 +1,6 @@
 export const signUp = async (values: any) => {
     try {
-        const response = await fetch('http://localhost:9091/auth/signup', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -27,7 +27,8 @@ export const signUp = async (values: any) => {
 
 export const login = async (values: any) => {
     try {
-        const response = await fetch('http://localhost:9091/auth/login', {
+        console.log(process.env);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

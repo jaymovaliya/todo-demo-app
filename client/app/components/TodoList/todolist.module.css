@@ -1,16 +1,23 @@
 .todoContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+  .loading {
+    width: 100%;
+    text-align: center;
+    font-style: italic;
+    color: #666666;
   }
   
   .todoCard {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border: 1px solid #dddddd;
     padding: 20px;
     margin-bottom: 20px;
-    width: calc(25% - 20px);
+    width: 300px;
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
   }
@@ -44,8 +51,14 @@
     color: #555555;
   }
 
-@media (max-width: 600px) {
-    .todoCard {
-        width: 100%;
+  @media only screen and (max-width: 600px) {
+    .card {
+      width: calc(50% - 10px); /* Two cards per row on screens <= 600px */
     }
-}
+  }
+
+  @media only screen and (max-width: 400px) {
+    .card {
+      width: 100%; /* One card per row on screens <= 400px */
+    }
+  }

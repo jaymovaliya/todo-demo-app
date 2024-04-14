@@ -21,14 +21,14 @@ const useApi = (fetchUrl?: string) => {
         if(method !== 'GET' && method !== 'DELETE') {
             options.body = JSON.stringify(body);
         }
-      const response = await fetch(`http://localhost:9091/${url}`, options)
-
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, options)
       if (!response.ok) {
         const errorData = await response.json();
         setError(errorData);
       }
 
       const result = await response.json();
+      console.log(result);
       if(method === 'GET') {
         setData(result);
       }

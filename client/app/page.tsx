@@ -70,7 +70,8 @@ const TodoPage: React.FC = () => {
         onClickCreateTodo={() => setShowModal(true)}
         onClickLogout={handleLogout}
       />
-      <TodoList 
+      <TodoList
+        loading={loading}
         todos={todos || []}
         deleteTodo={deleteTodo}
         updateTodo={updateTodo}

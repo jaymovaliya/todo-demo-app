@@ -12,12 +12,13 @@ interface Todo {
 }
 
 interface TodoListProps {
-  todos: Todo[];
-  deleteTodo: (id: string) => void;
-  updateTodo: (id: string, values: any) => void;
+    loading: boolean;
+    todos: Todo[];
+    deleteTodo: (id: string) => void;
+    updateTodo: (id: string, values: any) => void;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ todos, deleteTodo, updateTodo }) => {
+const TodoList: React.FC<TodoListProps> = ({ loading, todos, deleteTodo, updateTodo }) => {
     const [confirmation, showConfirmation] = useState<boolean>(false);
     const [editModal, showEditModal] = useState<boolean>(false);
     const [deletingTodo, setDeletingTodo] = useState<string>('');
@@ -55,8 +56,15 @@ const TodoList: React.FC<TodoListProps> = ({ todos, deleteTodo, updateTodo }) =>
         showEditModal(false);
     }
 
+    if(loading) {
+        return <div className={styles.loading}>Loading...</div>
+    }
+
     return (
         <div className={styles.todoContainer}>
+            {
+                todos.length === 0 && <div className={styles.loading}>No Todos available</div>
+            }
             {todos.map(todo => (
                 <div key={todo._id} className={styles.todoCard} onClick={() => openTodo(todo._id)}>
                     <div className={styles.deleteContainer}>
