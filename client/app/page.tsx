@@ -99,6 +99,26 @@ const TodoPage: React.FC = () => {
     }
   }
 
+  const updateTodo = async (id: string, values: any) => {
+    try {
+      const token = localStorage.getItem('token') || '';
+      const response = await fetch(`http://localhost:9091/todos/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(values)
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update todo');
+      }
+      fetchTodos(token);
+    } catch (error) {
+      console.error('Error updating todo:', error);
+    }
+  }
+
   return (
     <div>
       <Header 
@@ -110,6 +130,7 @@ const TodoPage: React.FC = () => {
       <TodoList 
         todos={filteredTodos}
         deleteTodo={deleteTodo}
+        updateTodo={updateTodo}
       />
       {showModal && (
         <CreateNewTodo onSubmit={handleSubmit} hideModal={() => setShowModal(false)} />
