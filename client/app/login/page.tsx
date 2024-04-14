@@ -6,10 +6,10 @@ import * as Yup from 'yup';
 import styles from './login.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { login } from '../common/auth-service';
 
 const LoginForm: React.FC = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const initialValues = {
     email: '',
     password: '',
@@ -21,31 +21,11 @@ const LoginForm: React.FC = () => {
   });
 
   const handleSubmit = async (values: typeof initialValues, { setErrors }: FormikHelpers<typeof initialValues>) => {
-    try {
-      setLoading(true);
-      const response = await fetch('http://localhost:9091/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if(errorData.code === "INVALID_USERNAME_OR_PASSWORD") {
-          setErrors({ password: errorData.message })
-          setLoading(false);
-          return;
-        }
-      }
-      const responseData = await response.json();
-      localStorage.setItem('token', responseData.token);
-      setLoading(false);
+    const res: any = await login(values);
+    if (res.error) {
+      setErrors({ password: res.password });
+    } else {
       router.push('/');
-    } catch (error) {
-      setLoading(false);
-      console.error('Signup error:', error);
     }
   };
 
@@ -53,7 +33,7 @@ const LoginForm: React.FC = () => {
     <div className={styles.container}>
       <h2 className={styles.title}>Log In</h2>
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-        {({ errors, touched }) => (
+        {({ errors, touched, isSubmitting }) => (
           <Form className={styles.form}>
             <div className={styles.inputGroup}>
               <label htmlFor="email" className={styles.label}>Email</label>
@@ -65,8 +45,8 @@ const LoginForm: React.FC = () => {
               <Field type="password" id="password" name="password" className={styles.input} />
               <ErrorMessage name="password" component="div" className={styles.error} />
             </div>
-            <button type="submit" className={styles.submitButton} disabled={loading}>
-              {loading ? '...' : 'Log In'}
+            <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+              {isSubmitting ? '...' : 'Log In'}
             </button>
           </Form>
         )}

@@ -1,14 +1,14 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styles from './signup.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { signUp } from '../common/auth-service';
 
 const SignupForm: React.FC = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -24,29 +24,11 @@ const SignupForm: React.FC = () => {
   });
 
   const handleSubmit = async (values: typeof initialValues, { setErrors }: FormikHelpers<typeof initialValues>) => {
-    try {
-      setLoading(true);
-      const response = await fetch('http://localhost:9091/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if(errorData.code === "USER_ALREADY_EXISTS") {
-          setErrors({ email: errorData.message })
-          setLoading(false);
-          return;
-        }
-      }
-      setLoading(false);
+    const res: any = await signUp(values);
+    if (res.error) {
+      setErrors({ email: res.email });
+    } else {
       router.push('/login');
-    } catch (error) {
-      setLoading(false);
-      console.error('Signup error:', error);
     }
   };
 
@@ -54,7 +36,7 @@ const SignupForm: React.FC = () => {
     <div className={styles.container}>
       <h2 className={styles.title}>Sign Up</h2>
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-        {({ errors, touched }) => (
+        {({ errors, touched, isSubmitting }) => (
           <Form className={styles.form}>
             <div className={styles.inputGroup}>
               <label htmlFor="firstName" className={styles.label}>First Name</label>
@@ -76,8 +58,8 @@ const SignupForm: React.FC = () => {
               <Field type="password" id="password" name="password" className={styles.input} />
               <ErrorMessage name="password" component="div" className={styles.error} />
             </div>
-            <button type="submit" className={styles.submitButton} disabled={loading}>
-              {loading ? '...' : 'Sign up'}
+            <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+              {isSubmitting ? '...' : 'Sign up'}
             </button>
           </Form>
         )}

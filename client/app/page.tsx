@@ -5,74 +5,37 @@ import { useRouter } from 'next/navigation';
 import Header from './components/TodoHeader/TodoHeader';
 import TodoList from './components/TodoList/TodoList';
 import CreateNewTodo from './components/CreateTodo/CreateTodo';
+import useApi from './common/hooks';
 
 const TodoPage: React.FC = () => {
   const router = useRouter();
-  const [todos, setTodos] = useState<any[]>([]);
-  const [filteredTodos, setFilteredTodos] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { data: todos, loading, refetch, deleteData, putData, postData } = useApi('todos');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
-    } else {
-      fetchTodos(token);
     }
   }, []);
 
-  const fetchTodos = async (token: string) => {
-    try {
-      const response = await fetch('http://localhost:9091/todos', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch todos');
-      }
-      const data = await response.json();
-      setTodos(data);
-      setFilteredTodos(data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching todos:', error);
-      // Handle error
+  const getRefecthUrl = () => {
+    if(activeFilter === 'all') {
+      return 'todos';
     }
-  };
+    return `todos?status=${activeFilter}`;
+  }
 
-  const filterTodos = (status: string) => {
-    setActiveFilter(status);
-    if (status === 'all') {
-      setFilteredTodos(todos);
-    } else {
-      const filtered = todos.filter(todo => todo.status === status);
-      setFilteredTodos(filtered);
-    }
-  };
+  const refetchData = () => {
+    refetch(getRefecthUrl());
+  }
+
 
   const handleSubmit = async (values: any) => {
-    try {
-      const token = localStorage.getItem('token') || '';
-      const response = await fetch('http://localhost:9091/todos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(values)
-      });
-      if (!response.ok) {
-        throw new Error('Failed to create todo');
-      }
-      setShowModal(false);
-      fetchTodos(token);
-    } catch (error) {
-      console.error('Error creating todo:', error);
-      // Handle error
-    }
+    await postData('todos', values);
+    refetchData();
+    setShowModal(false);
   };
 
   const handleLogout = () => {
@@ -81,41 +44,21 @@ const TodoPage: React.FC = () => {
   }
 
   const deleteTodo = async (id: string) => {
-    try {
-      const token = localStorage.getItem('token') || '';
-      console.log('Deleting todo:', id)
-      const response = await fetch(`http://localhost:9091/todos/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete todo');
-      }
-      fetchTodos(token);
-    } catch (error) {
-      console.error('Error deleting todo:', error);
-    }
+      await deleteData(`todos/${id}`);
+      refetchData();
   }
 
   const updateTodo = async (id: string, values: any) => {
-    try {
-      const token = localStorage.getItem('token') || '';
-      const response = await fetch(`http://localhost:9091/todos/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(values)
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update todo');
-      }
-      fetchTodos(token);
-    } catch (error) {
-      console.error('Error updating todo:', error);
+    await putData(`todos/${id}`, values);
+    refetchData();
+  }
+
+  const filterTodos = (status: string) => {
+    setActiveFilter(status);
+    if(status === 'all') {
+      refetch('todos');
+    } else {
+      refetch(`todos?status=${status}`);
     }
   }
 
@@ -128,7 +71,7 @@ const TodoPage: React.FC = () => {
         onClickLogout={handleLogout}
       />
       <TodoList 
-        todos={filteredTodos}
+        todos={todos || []}
         deleteTodo={deleteTodo}
         updateTodo={updateTodo}
       />
