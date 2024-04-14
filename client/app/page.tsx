@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from './page.module.css';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import Header from './components/TodoHeader/TodoHeader';
+import TodoList from './components/TodoList/TodoList';
+import CreateNewTodo from './components/CreateTodo/CreateTodo';
 
 const TodoPage: React.FC = () => {
   const router = useRouter();
@@ -75,56 +75,22 @@ const TodoPage: React.FC = () => {
     }
   };
 
-  const validationSchema = Yup.object({
-    title: Yup.string().required('Title is required').max(100, 'Title must be at most 100 characters'),
-    description: Yup.string().max(2000, 'Description must be at most 2000 characters')
-  });
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+  }
 
   return (
     <div>
-      <div className={styles.header}>
-        <h1>Todo List</h1>
-        <button className={styles.createTodoButton} onClick={() => setShowModal(true)}>Create New Todo</button>
-      </div>
-      <div className={styles.filters}>
-      <button className={`${styles.filterButton} ${activeFilter === 'all' ? styles.active : ''}`} onClick={() => filterTodos('all')}>All</button>
-        <button className={`${styles.filterButton} ${activeFilter === 'Not Started' ? styles.active : ''}`} onClick={() => filterTodos('Not Started')}>Todo</button>
-        <button className={`${styles.filterButton} ${activeFilter === 'In Progress' ? styles.active : ''}`} onClick={() => filterTodos('In Progress')}>In Progress</button>
-        <button className={`${styles.filterButton} ${activeFilter === 'Completed' ? styles.active : ''}`} onClick={() => filterTodos('Completed')}>Done</button>
-      </div>
-      <div className={styles.todoContainer}>
-      {filteredTodos.map(todo => (
-        <div key={todo.id} className={styles.todoCard}>
-          <h3 className={styles.todoTitle}>{todo.title}</h3>
-          <p className={styles.todoStatus}>Status: {todo.status}</p>
-          <p className={styles.todoDescription}>{todo.description}</p>
-        </div>
-      ))}
-      </div>
+      <Header 
+        activeFilter={activeFilter}
+        filterTodos={filterTodos}
+        onClickCreateTodo={() => setShowModal(true)}
+        onClickLogout={handleLogout}
+      />
+      <TodoList todos={filteredTodos} />
       {showModal && (
-        <div className={styles.modalBackdrop}>
-          <div className={styles.modalContent}>
-            <h2>Create New Todo</h2>
-            <Formik initialValues={{ title: '', description: '' }} onSubmit={handleSubmit} validationSchema={validationSchema}>
-              {({ errors, touched }) => (
-                <Form>
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="title" className={styles.label}>Title</label>
-                    <Field type="text" id="title" name="title" className={styles.input} />
-                    <ErrorMessage name="title" component="div" className={styles.error} />
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="description" className={styles.label}>Description</label>
-                    <Field as="textarea" id="description" name="description" className={styles.input} />
-                    <ErrorMessage name="description" component="div" className={styles.error} />
-                  </div>
-                  <button type="submit" className={styles.submitButton}>Submit</button>
-                  <button type="button" onClick={() => setShowModal(false)} className={styles.cancelButton}>Cancel</button>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
+        <CreateNewTodo onSubmit={handleSubmit} hideModal={() => setShowModal(false)} />
       )}
     </div>
   );
