@@ -1,6 +1,7 @@
 /server/node_modules
 /server/.env
 /server/dist
+/server/.vercel
 
 # dependencies
 /client/node_modules
