@@ -6,6 +6,9 @@ Task app is deployed using vercel, and it is mobile responsive,
 
 Check it live on: https://todo-client-akez9vbh5-jay-movaliyas-projects.vercel.app
 
+Demo Video
+https://www.loom.com/share/383cda44dccf4de9a4885dc5eaf107a5?sid=744ce94f-bb8f-47fa-bad5-82c0d879c8b0
+
 ## Features
 
 - Sign up user
